@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: localSense
+  datasource:
+    url: jdbc:postgresql://localhost:5438/localSense
+    username: localSense
+    password: localSense
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
