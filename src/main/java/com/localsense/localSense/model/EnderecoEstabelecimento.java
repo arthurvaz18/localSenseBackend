@@ -42,13 +42,13 @@ public class EnderecoEstabelecimento {
     @LastModifiedDate
     private LocalDate atualizadoEm;
 
-    private Double latitude;
-
-    private Double longitude;
-
     @OneToOne
     @JoinColumn(name = "estabelecimento_id", nullable = false)
     private Estabelecimento estabelecimento;
+
+    @OneToOne(mappedBy = "enderecoEstabelecimento", cascade = CascadeType.ALL)
+    private LocalizacaoEstabelecimento localizacaoEstabelecimento;
+
 
     public UUID getId() {
         return id;
@@ -130,19 +130,11 @@ public class EnderecoEstabelecimento {
         this.estabelecimento = estabelecimento;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public LocalizacaoEstabelecimento getLocalizacaoEstabelecimento() {
+        return localizacaoEstabelecimento;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setLocalizacaoEstabelecimento(LocalizacaoEstabelecimento localizacaoEstabelecimento) {
+        this.localizacaoEstabelecimento = localizacaoEstabelecimento;
     }
 }
