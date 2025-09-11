@@ -78,12 +78,14 @@ public class Estabelecimento {
     // Endereço
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "endereco_id")
-    @JsonIgnoreProperties("estabelecimento") // evita loop infinito
+    @Valid
+    @JsonIgnoreProperties("estabelecimento")
     private EnderecoEstabelecimento enderecoEstabelecimento;
 
     // Horário
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "horario_funcionamento_id")
+    @Valid
     @JsonIgnoreProperties("estabelecimento")
     private HorarioFuncionamento horarioFuncionamento;
 
