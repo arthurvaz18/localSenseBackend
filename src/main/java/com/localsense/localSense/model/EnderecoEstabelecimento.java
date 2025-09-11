@@ -1,7 +1,11 @@
 package com.localsense.localSense.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -10,7 +14,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "enderecoEstabelecimento")
+@Table(name = "endereco_estabelecimento")
 @EntityListeners(AuditingEntityListener.class)
 public class EnderecoEstabelecimento {
 
@@ -18,22 +22,24 @@ public class EnderecoEstabelecimento {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(nullable = false, length = 100)
+    @NotBlank
     private String pais;
 
-    @Column(nullable = false, length = 2)
+    @NotBlank
     private String estado;
 
-    @Column(nullable = false, length = 8)
+    @NotBlank
     private String cep;
 
-    @Column(nullable = false, length = 100)
+    @NotBlank
     private String cidade;
 
-    @Column(nullable = false, length = 150)
-    private String endereco;
+    @NotBlank
+    private String rua;
 
-    @Column(length = 150)
+    @NotBlank
+    private String numero;
+
     private String complemento;
 
     @CreatedDate
@@ -43,14 +49,13 @@ public class EnderecoEstabelecimento {
     @LastModifiedDate
     private LocalDate atualizadoEm;
 
-    @JsonBackReference
-    @OneToOne
-    @JoinColumn(name = "estabelecimento_id", nullable = false)
+    @OneToOne(mappedBy = "enderecoEstabelecimento")
+    @JsonIgnoreProperties("enderecoEstabelecimento") // evita loop
     private Estabelecimento estabelecimento;
 
-    @OneToOne(mappedBy = "enderecoEstabelecimento", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "enderecoEstabelecimento", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("enderecoEstabelecimento")
     private LocalizacaoEstabelecimento localizacaoEstabelecimento;
-
 
     public UUID getId() {
         return id;
@@ -92,12 +97,20 @@ public class EnderecoEstabelecimento {
         this.cidade = cidade;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public String getRua() {
+        return rua;
     }
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+    public void setRua(String rua) {
+        this.rua = rua;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
     public String getComplemento() {
@@ -140,3 +153,5 @@ public class EnderecoEstabelecimento {
         this.localizacaoEstabelecimento = localizacaoEstabelecimento;
     }
 }
+
+

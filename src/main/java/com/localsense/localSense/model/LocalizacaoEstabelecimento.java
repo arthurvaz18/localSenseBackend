@@ -1,5 +1,7 @@
 package com.localsense.localSense.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -13,13 +15,12 @@ public class LocalizacaoEstabelecimento {
     private UUID id;
 
     private Double latitude;
-
     private Double longitude;
-
     private Double raioProximidade;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "endereco_id", nullable = false)
+    @JsonIgnoreProperties({"localizacaoEstabelecimento", "estabelecimento"})
     private EnderecoEstabelecimento enderecoEstabelecimento;
 
     public UUID getId() {
@@ -62,3 +63,4 @@ public class LocalizacaoEstabelecimento {
         this.enderecoEstabelecimento = enderecoEstabelecimento;
     }
 }
+

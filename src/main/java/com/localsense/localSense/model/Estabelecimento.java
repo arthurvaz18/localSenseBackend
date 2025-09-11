@@ -1,9 +1,13 @@
 package com.localsense.localSense.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -13,9 +17,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 @Entity
 @Table(name = "estabelecimento")
@@ -24,39 +28,44 @@ public class Estabelecimento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private UUID id;
 
     @Email
+    @NotBlank
     @Column(nullable = false)
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(nullable = false)
+    @NotBlank
     @Size(min = 6)
+    @Column(nullable = false)
     private String senha;
 
+    @NotBlank
     @Column(name = "nome_fantasia", length = 150)
     private String nomeFantasia;
 
+    @NotBlank
     @Column(name = "razao_social", length = 150)
     private String razaoSocial;
 
     @CNPJ
-    @Column(name = "cnpj", length = 14, unique = true, nullable = false)
+    @NotBlank
+    @Column(length = 14, unique = true, nullable = false)
     private String cnpj;
 
-    @Column(name = "descricao", columnDefinition = "TEXT")
+    @NotBlank
+    @Column(columnDefinition = "TEXT")
     private String descricao;
 
-    @Column(name = "telefone", length = 15)
+    @NotBlank
+    @Column(length = 15)
     private String telefone;
 
-    @Column(name = "status")
     private Boolean status;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "midias", columnDefinition = "JSONB")
+    @Column(columnDefinition = "JSONB")
     private List<String> midias;
 
     @CreatedDate
@@ -66,13 +75,17 @@ public class Estabelecimento {
     @LastModifiedDate
     private LocalDate atualizadoEm;
 
-    @JsonManagedReference
-    @OneToOne(mappedBy = "estabelecimento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // Endereço
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "endereco_id")
+    @JsonIgnoreProperties("estabelecimento") // evita loop infinito
     private EnderecoEstabelecimento enderecoEstabelecimento;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "estabelecimento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<HorarioFuncionamento> horariosFuncionamento = new ArrayList<>();
+    // Horário
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "horario_funcionamento_id")
+    @JsonIgnoreProperties("estabelecimento")
+    private HorarioFuncionamento horarioFuncionamento;
 
     public UUID getId() {
         return id;
@@ -146,14 +159,6 @@ public class Estabelecimento {
         this.status = status;
     }
 
-    public EnderecoEstabelecimento getEnderecoEstabelecimento() {
-        return enderecoEstabelecimento;
-    }
-
-    public void setEnderecoEstabelecimento(EnderecoEstabelecimento enderecoEstabelecimento) {
-        this.enderecoEstabelecimento = enderecoEstabelecimento;
-    }
-
     public List<String> getMidias() {
         return midias;
     }
@@ -178,11 +183,19 @@ public class Estabelecimento {
         this.atualizadoEm = atualizadoEm;
     }
 
-    public List<HorarioFuncionamento> getHorariosFuncionamento() {
-        return horariosFuncionamento;
+    public EnderecoEstabelecimento getEnderecoEstabelecimento() {
+        return enderecoEstabelecimento;
     }
 
-    public void setHorariosFuncionamento(List<HorarioFuncionamento> horariosFuncionamento) {
-        this.horariosFuncionamento = horariosFuncionamento;
+    public void setEnderecoEstabelecimento(EnderecoEstabelecimento enderecoEstabelecimento) {
+        this.enderecoEstabelecimento = enderecoEstabelecimento;
+    }
+
+    public HorarioFuncionamento getHorarioFuncionamento() {
+        return horarioFuncionamento;
+    }
+
+    public void setHorarioFuncionamento(HorarioFuncionamento horarioFuncionamento) {
+        this.horarioFuncionamento = horarioFuncionamento;
     }
 }

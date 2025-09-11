@@ -1,5 +1,6 @@
 package com.localsense.localSense.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.localsense.localSense.model.enums.DiaSemanaEnum;
 import jakarta.persistence.*;
 
@@ -15,24 +16,19 @@ public class HorarioFuncionamento {
     private UUID id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
     private DiaSemanaEnum diaSemanaInicio;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
     private DiaSemanaEnum diaSemanaFim;
 
-    @Column(nullable = false)
     private LocalTime horaAbertura;
-
-    @Column(nullable = false)
     private LocalTime horaFechamento;
 
     @ManyToOne
     @JoinColumn(name = "estabelecimento_id", nullable = false)
+    @JsonIgnoreProperties("horarioFuncionamento")
     private Estabelecimento estabelecimento;
 
-    @Column(length = 255)
     private String observacao;
 
     public UUID getId() {
@@ -91,3 +87,4 @@ public class HorarioFuncionamento {
         this.observacao = observacao;
     }
 }
+
