@@ -38,10 +38,7 @@ public class EstabelecimentoResource {
     }
 
     @PutMapping("/editar")
-    public ResponseEntity<Estabelecimento> atualizarEstabelecimento(
-            @PathVariable UUID id,
-            @Valid @RequestBody Estabelecimento estabelecimento) {
-
+    public ResponseEntity<Estabelecimento> atualizarEstabelecimento(@PathVariable UUID id, @Valid @RequestBody Estabelecimento estabelecimento) {
         Estabelecimento atualizado = estabelecimentoService.atualizarEstabelecimento(id, estabelecimento);
         return ResponseEntity.ok(atualizado);
     }
