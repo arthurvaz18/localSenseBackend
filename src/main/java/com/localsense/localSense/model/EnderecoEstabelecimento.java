@@ -1,5 +1,6 @@
 package com.localsense.localSense.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -42,6 +43,7 @@ public class EnderecoEstabelecimento {
     @LastModifiedDate
     private LocalDate atualizadoEm;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "estabelecimento_id", nullable = false)
     private Estabelecimento estabelecimento;
