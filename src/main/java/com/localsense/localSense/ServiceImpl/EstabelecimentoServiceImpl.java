@@ -6,6 +6,8 @@ import com.localsense.localSense.service.EstabelecimentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EstabelecimentoServiceImpl implements EstabelecimentoService {
 
@@ -20,13 +22,17 @@ public class EstabelecimentoServiceImpl implements EstabelecimentoService {
         if (estabelecimentoRepository.existsByEmail(estabelecimento.getEmail())) {
             throw new IllegalArgumentException("Email já cadastrado");
         }
-
-        // Vincula o endereço
         if (estabelecimento.getEnderecoEstabelecimento() != null) {
             estabelecimento.getEnderecoEstabelecimento().setEstabelecimento(estabelecimento);
         }
 
         return estabelecimentoRepository.save(estabelecimento);
     }
+
+    @Override
+    public List<Estabelecimento> listarEstabelecimentos() {
+        return estabelecimentoRepository.findAll();
+    }
+
 
 }
