@@ -1,5 +1,6 @@
 package com.localsense.localSense.ServiceImpl;
 
+import com.localsense.localSense.utilitarios.AtualizadorEstabelecimento;
 import com.localsense.localSense.configSecurity.JwtUtil;
 import com.localsense.localSense.loginEstabelecimento.AuthResponse;
 import com.localsense.localSense.model.Estabelecimento;
@@ -49,30 +50,11 @@ public class EstabelecimentoServiceImpl implements EstabelecimentoService {
 
     @Override
     public Estabelecimento atualizarEstabelecimento(UUID id, Estabelecimento estabelecimento) {
-        Estabelecimento existente = estabelecimentoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Estabelecimento não encontrado para o ID: " + id));
+        Estabelecimento existente = buscarPorId(id);
 
-        // Atualiza campos
-        existente.setEmail(estabelecimento.getEmail());
-        existente.setSenha(estabelecimento.getSenha());
-        existente.setNomeFantasia(estabelecimento.getNomeFantasia());
-        existente.setRazaoSocial(estabelecimento.getRazaoSocial());
-        existente.setCnpj(estabelecimento.getCnpj());
-        existente.setDescricao(estabelecimento.getDescricao());
-        existente.setTelefone(estabelecimento.getTelefone());
-        existente.setStatus(estabelecimento.getStatus());
-        existente.setMidias(estabelecimento.getMidias());
-
-        // Atualiza endereço
-        if (estabelecimento.getEnderecoEstabelecimento() != null) {
-            estabelecimento.getEnderecoEstabelecimento().setEstabelecimento(existente);
-            existente.setEnderecoEstabelecimento(estabelecimento.getEnderecoEstabelecimento());
-        }
-
-        // Atualiza horário
-        if (estabelecimento.getHorarioFuncionamento() != null) {
-            existente.setHorarioFuncionamento(estabelecimento.getHorarioFuncionamento());
-        }
+        AtualizadorEstabelecimento.atualizarInformacoesPrincipais(existente, estabelecimento);
+        AtualizadorEstabelecimento.atualizarEndereco(existente, estabelecimento.getEnderecoEstabelecimento());
+        AtualizadorEstabelecimento.atualizarHorarioFuncionamento(existente, estabelecimento.getHorarioFuncionamento());
 
         return estabelecimentoRepository.save(existente);
     }
