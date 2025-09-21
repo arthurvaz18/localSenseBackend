@@ -1,5 +1,7 @@
 package com.localsense.localSense.ServiceImpl;
 
+import com.localsense.localSense.configSecurity.JwtUtil;
+import com.localsense.localSense.loginEstabelecimento.AuthResponse;
 import com.localsense.localSense.model.Estabelecimento;
 import com.localsense.localSense.repository.EstabelecimentoRepository;
 import com.localsense.localSense.service.EstabelecimentoService;
@@ -19,6 +21,9 @@ public class EstabelecimentoServiceImpl implements EstabelecimentoService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    JwtUtil jwtUtil;
 
     @Override
     public Estabelecimento criarEstabelecimento(Estabelecimento estabelecimento) {
@@ -78,18 +83,33 @@ public class EstabelecimentoServiceImpl implements EstabelecimentoService {
 
     @Override
     public void deletarEstabelecimento(UUID id) {
-        Estabelecimento existente = estabelecimentoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Estabelecimento não encontrado para o ID: " + id));
+        Estabelecimento existente = estabelecimentoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Estabelecimento não encontrado para o ID: " + id));
         estabelecimentoRepository.delete(existente);
     }
 
     @Override
     public Optional<Estabelecimento> autenticar(String email, String senha) {
         Optional<Estabelecimento> estabelecimentoOptional = estabelecimentoRepository.findByEmail(email);
+
         if (estabelecimentoOptional.isPresent() && passwordEncoder.matches(senha, estabelecimentoOptional.get().getSenha())) {
             return estabelecimentoOptional;
         }
+
         return Optional.empty();
+    }
+
+    @Override
+    public AuthResponse login(String email, String senha) {
+        Optional<Estabelecimento> estabelecimentoOptional = autenticar(email, senha);
+
+        if (estabelecimentoOptional.isPresent()) {
+            Estabelecimento estabelecimentoEntity = estabelecimentoOptional.get();
+            String token = jwtUtil.generateToken(estabelecimentoEntity.getEmail());
+            return new AuthResponse(token, estabelecimentoEntity.getId(), estabelecimentoEntity.getNomeFantasia());
+        }
+
+        return null;
+
     }
 
 
