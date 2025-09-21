@@ -4,6 +4,7 @@ import com.localsense.localSense.model.Estabelecimento;
 import com.localsense.localSense.repository.EstabelecimentoRepository;
 import com.localsense.localSense.service.EstabelecimentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,9 @@ public class EstabelecimentoServiceImpl implements EstabelecimentoService {
 
     @Autowired
     EstabelecimentoRepository estabelecimentoRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public Estabelecimento criarEstabelecimento(Estabelecimento estabelecimento) {
@@ -27,6 +31,7 @@ public class EstabelecimentoServiceImpl implements EstabelecimentoService {
             estabelecimento.getEnderecoEstabelecimento().setEstabelecimento(estabelecimento);
         }
 
+        estabelecimento.setSenha(passwordEncoder.encode(estabelecimento.getSenha()));
         return estabelecimentoRepository.save(estabelecimento);
     }
 
