@@ -1,13 +1,18 @@
 package com.localsense.localSense.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "localizacao")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class LocalizacaoEstabelecimento {
 
     @Id
@@ -22,45 +27,4 @@ public class LocalizacaoEstabelecimento {
     @JoinColumn(name = "endereco_id", nullable = false)
     @JsonIgnoreProperties({"localizacaoEstabelecimento", "estabelecimento"})
     private EnderecoEstabelecimento enderecoEstabelecimento;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public Double getRaioProximidade() {
-        return raioProximidade;
-    }
-
-    public void setRaioProximidade(Double raioProximidade) {
-        this.raioProximidade = raioProximidade;
-    }
-
-    public EnderecoEstabelecimento getEnderecoEstabelecimento() {
-        return enderecoEstabelecimento;
-    }
-
-    public void setEnderecoEstabelecimento(EnderecoEstabelecimento enderecoEstabelecimento) {
-        this.enderecoEstabelecimento = enderecoEstabelecimento;
-    }
 }
-

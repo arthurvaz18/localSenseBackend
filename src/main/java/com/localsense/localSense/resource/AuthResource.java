@@ -17,11 +17,8 @@ public class AuthResource {
     private EstabelecimentoService estabelecimentoService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         AuthResponse response = estabelecimentoService.login(loginRequest.getEmail(), loginRequest.getSenha());
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou senha inválidos");
+        return ResponseEntity.ok(response);
     }
 }

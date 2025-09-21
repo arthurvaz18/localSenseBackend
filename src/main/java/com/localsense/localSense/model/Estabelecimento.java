@@ -1,14 +1,13 @@
 package com.localsense.localSense.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.hibernate.validator.constraints.br.CNPJ;
@@ -20,10 +19,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-
 @Entity
 @Table(name = "estabelecimento")
 @EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Estabelecimento {
 
     @Id
@@ -75,129 +78,15 @@ public class Estabelecimento {
     @LastModifiedDate
     private LocalDate atualizadoEm;
 
-    // Endereço
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "endereco_id")
     @Valid
     @JsonIgnoreProperties("estabelecimento")
     private EnderecoEstabelecimento enderecoEstabelecimento;
 
-    // Horário
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "horario_funcionamento_id")
     @Valid
     @JsonIgnoreProperties("estabelecimento")
     private HorarioFuncionamento horarioFuncionamento;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public String getNomeFantasia() {
-        return nomeFantasia;
-    }
-
-    public void setNomeFantasia(String nomeFantasia) {
-        this.nomeFantasia = nomeFantasia;
-    }
-
-    public String getRazaoSocial() {
-        return razaoSocial;
-    }
-
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
-    }
-
-    public String getCnpj() {
-        return cnpj;
-    }
-
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public List<String> getMidias() {
-        return midias;
-    }
-
-    public void setMidias(List<String> midias) {
-        this.midias = midias;
-    }
-
-    public LocalDate getCriadoEm() {
-        return criadoEm;
-    }
-
-    public void setCriadoEm(LocalDate criadoEm) {
-        this.criadoEm = criadoEm;
-    }
-
-    public LocalDate getAtualizadoEm() {
-        return atualizadoEm;
-    }
-
-    public void setAtualizadoEm(LocalDate atualizadoEm) {
-        this.atualizadoEm = atualizadoEm;
-    }
-
-    public EnderecoEstabelecimento getEnderecoEstabelecimento() {
-        return enderecoEstabelecimento;
-    }
-
-    public void setEnderecoEstabelecimento(EnderecoEstabelecimento enderecoEstabelecimento) {
-        this.enderecoEstabelecimento = enderecoEstabelecimento;
-    }
-
-    public HorarioFuncionamento getHorarioFuncionamento() {
-        return horarioFuncionamento;
-    }
-
-    public void setHorarioFuncionamento(HorarioFuncionamento horarioFuncionamento) {
-        this.horarioFuncionamento = horarioFuncionamento;
-    }
 }

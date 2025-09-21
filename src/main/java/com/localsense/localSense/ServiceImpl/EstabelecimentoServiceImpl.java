@@ -5,7 +5,7 @@ import com.localsense.localSense.loginEstabelecimento.AuthResponse;
 import com.localsense.localSense.model.Estabelecimento;
 import com.localsense.localSense.repository.EstabelecimentoRepository;
 import com.localsense.localSense.service.EstabelecimentoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +14,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class EstabelecimentoServiceImpl implements EstabelecimentoService {
 
-    @Autowired
-    EstabelecimentoRepository estabelecimentoRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    JwtUtil jwtUtil;
+    private final EstabelecimentoRepository estabelecimentoRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Override
     public Estabelecimento criarEstabelecimento(Estabelecimento estabelecimento) {
@@ -89,27 +85,12 @@ public class EstabelecimentoServiceImpl implements EstabelecimentoService {
 
     @Override
     public Optional<Estabelecimento> autenticar(String email, String senha) {
-        Optional<Estabelecimento> estabelecimentoOptional = estabelecimentoRepository.findByEmail(email);
-
-        if (estabelecimentoOptional.isPresent() && passwordEncoder.matches(senha, estabelecimentoOptional.get().getSenha())) {
-            return estabelecimentoOptional;
-        }
-
-        return Optional.empty();
+        return estabelecimentoRepository.findByEmail(email).filter(estabelecimento -> passwordEncoder.matches(senha, estabelecimento.getSenha()));
     }
 
     @Override
     public AuthResponse login(String email, String senha) {
-        Optional<Estabelecimento> estabelecimentoOptional = autenticar(email, senha);
-
-        if (estabelecimentoOptional.isPresent()) {
-            Estabelecimento estabelecimentoEntity = estabelecimentoOptional.get();
-            String token = jwtUtil.generateToken(estabelecimentoEntity.getEmail());
-            return new AuthResponse(token, estabelecimentoEntity.getId(), estabelecimentoEntity.getNomeFantasia());
-        }
-
-        return null;
-
+        return autenticar(email, senha).map(estabelecimento -> new AuthResponse(jwtUtil.generateToken(estabelecimento.getEmail()), estabelecimento.getId(), estabelecimento.getNomeFantasia())).orElseThrow(() -> new IllegalArgumentException("Email ou senha inválidos"));
     }
 
 
