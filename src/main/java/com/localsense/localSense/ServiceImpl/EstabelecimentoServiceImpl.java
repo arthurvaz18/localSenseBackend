@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -80,6 +81,15 @@ public class EstabelecimentoServiceImpl implements EstabelecimentoService {
         Estabelecimento existente = estabelecimentoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Estabelecimento não encontrado para o ID: " + id));
         estabelecimentoRepository.delete(existente);
+    }
+
+    @Override
+    public Optional<Estabelecimento> autenticar(String email, String senha) {
+        Optional<Estabelecimento> estabelecimentoOptional = estabelecimentoRepository.findByEmail(email);
+        if (estabelecimentoOptional.isPresent() && passwordEncoder.matches(senha, estabelecimentoOptional.get().getSenha())) {
+            return estabelecimentoOptional;
+        }
+        return Optional.empty();
     }
 
 

@@ -3,6 +3,7 @@ package com.localsense.localSense.service;
 import com.localsense.localSense.model.Estabelecimento;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface EstabelecimentoService {
@@ -11,6 +12,7 @@ public interface EstabelecimentoService {
     Estabelecimento buscarPorId(UUID id);
     Estabelecimento atualizarEstabelecimento(UUID id, Estabelecimento estabelecimento);
     void deletarEstabelecimento(UUID id);
+    Optional<Estabelecimento> autenticar(String email, String senha);
 
 
 }
