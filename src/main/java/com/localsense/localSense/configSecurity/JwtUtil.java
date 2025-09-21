@@ -11,34 +11,38 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "minha-chave-super-secreta-muito-grande"; // mínimo 32 bytes
+    private static final String CHAVE_SECRETA = "minha-chave-super-secreta-muito-grande"; // chave usada para assinar o token
 
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    // Retorna a chave de assinatura HMAC a partir da chave secreta
+    private Key obterChaveAssinatura() {
+        return Keys.hmacShaKeyFor(CHAVE_SECRETA.getBytes());
     }
 
-    public String generateToken(String email) {
+    // Cria um token JWT com o email como assunto e expiração de 24h
+    public String gerarToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 24 horas
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .signWith(obterChaveAssinatura(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String extractEmail(String token) {
+    // Lê o token e retorna o email que está no "sub"
+    public String extrairEmail(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(obterChaveAssinatura())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    public boolean isTokenValid(String token) {
+    // Valida o token (assinatura e formato)
+    public boolean tokenValido(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
+                    .setSigningKey(obterChaveAssinatura())
                     .build()
                     .parseClaimsJws(token);
             return true;

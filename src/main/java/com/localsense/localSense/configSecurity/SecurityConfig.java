@@ -25,18 +25,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
 
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        // Rotas públicas
-                        .requestMatchers("/auth/**", "/cadastrarEstabelecimentos/**").permitAll()
-                        // Todas as outras rotas requerem autenticação
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.csrf(csrf -> csrf.disable());
+
+        http.authorizeHttpRequests(auth ->
+                auth.requestMatchers("/auth/**", "/cadastrarEstabelecimentos/**").permitAll().anyRequest().authenticated());
+
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -51,6 +47,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
+
         return source;
     }
 }

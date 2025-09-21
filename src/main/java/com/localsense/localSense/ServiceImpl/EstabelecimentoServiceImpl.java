@@ -72,7 +72,7 @@ public class EstabelecimentoServiceImpl implements EstabelecimentoService {
 
     @Override
     public AuthResponse login(String email, String senha) {
-        return autenticar(email, senha).map(estabelecimento -> new AuthResponse(jwtUtil.generateToken(estabelecimento.getEmail()), estabelecimento.getId(), estabelecimento.getNomeFantasia())).orElseThrow(() -> new IllegalArgumentException("Email ou senha inválidos"));
+        return autenticar(email, senha).map(estabelecimento -> new AuthResponse(jwtUtil.gerarToken(estabelecimento.getEmail()), estabelecimento.getId(), estabelecimento.getNomeFantasia())).orElseThrow(() -> new IllegalArgumentException("Email ou senha inválidos"));
     }
 
 

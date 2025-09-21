@@ -3,6 +3,7 @@ package com.localsense.localSense.resource;
 import com.localsense.localSense.model.Estabelecimento;
 import com.localsense.localSense.service.EstabelecimentoService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,13 +12,11 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/cadastrarEstabelecimentos")
+@RequiredArgsConstructor
 public class EstabelecimentoResource {
 
-    private final EstabelecimentoService estabelecimentoService;
+    final EstabelecimentoService estabelecimentoService;
 
-    public EstabelecimentoResource(EstabelecimentoService estabelecimentoService) {
-        this.estabelecimentoService = estabelecimentoService;
-    }
 
     @PostMapping("/cadastrar")
     public ResponseEntity<Estabelecimento> criarEstabelecimento(@Valid @RequestBody Estabelecimento estabelecimento) {
